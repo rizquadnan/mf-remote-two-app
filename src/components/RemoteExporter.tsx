@@ -1,3 +1,9 @@
+// Always export remote components with this component
+// This component handles:
+// 1. render error
+// 2. event handler error
+// 3. logging to remote app's sentry
+
 import { Button } from "antd";
 import React from "react";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
@@ -17,26 +23,23 @@ const RemoteExporter = (props: TRemoteExporter) => {
 
   return (
     <ErrorBoundary
-      FallbackComponent={({ error, resetErrorBoundary }) =>
-        {
-          
-          if (props.fallbackComponent) {
-            return props.fallbackComponent({ error, resetErrorBoundary });
-          } else {
-            return (
-              <div>
-                {error instanceof Error ? (
-                  <div>
-                    <p>Error name: {error.name}</p>
-                    <p>Error message: {error.message}</p>
-                  </div>
-                ) : null}
-                <Button onClick={resetErrorBoundary}>Reset Component</Button>
-              </div>
-            );
-          }
+      FallbackComponent={({ error, resetErrorBoundary }) => {
+        if (props.fallbackComponent) {
+          return props.fallbackComponent({ error, resetErrorBoundary });
+        } else {
+          return (
+            <div>
+              {error instanceof Error ? (
+                <div>
+                  <p>Error name: {error.name}</p>
+                  <p>Error message: {error.message}</p>
+                </div>
+              ) : null}
+              <Button onClick={resetErrorBoundary}>Reset Component</Button>
+            </div>
+          );
         }
-      }
+      }}
       onError={props.onError ?? handleError}
     >
       {props.children}
