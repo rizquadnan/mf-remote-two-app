@@ -1,6 +1,5 @@
 import axios, { AxiosError } from "axios";
 import { IS_BROWSER, IS_SERVER } from "@/config";
-import { useAuthStore } from "@/stores/auth";
 import { useNotificationStore } from "@/stores/notifications";
 
 export const axiosInstance = axios.create({
@@ -47,8 +46,6 @@ axiosInstance.interceptors.response.use(
           message: "Gagal melakukan otentikasi",
           description: "Mohon melakukan login ulang",
         });
-
-        useAuthStore.getState().resetUser();
 
         return;
       }
