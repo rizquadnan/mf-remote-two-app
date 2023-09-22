@@ -1,9 +1,22 @@
 const { NextFederationPlugin } = require("@module-federation/nextjs-mf");
 const packageJson = require("./package.json")
 
+const API_SOURCE = process.env.API_SOURCE || "http://localhost:8888";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    API_SOURCE,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${API_SOURCE}/:path*`,
+      },
+    ];
+  },
   /**
    *
    * @param {import('webpack').Configuration} config
@@ -15,6 +28,7 @@ const nextConfig = {
         name: "remote-two",
         filename: "static/chunks/remoteEntry.js",
         exposes: {
+          "./RemoteTwoTestAuth": "./src/components/RemoteTwoTestAuth.tsx",
           "./RemoteTwoTitle": "./src/components/RemoteTwoTitle.tsx",
           // later better to define way for modules / components / etc that are shared for all remotes
           // like these files below
@@ -27,7 +41,7 @@ const nextConfig = {
           antd: {
             singleton: true,
             requiredVersion: packageJson.dependencies.antd,
-            eager: true
+            eager: true,
           },
         },
       })
