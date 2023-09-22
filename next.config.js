@@ -1,6 +1,8 @@
 const { NextFederationPlugin } = require("@module-federation/nextjs-mf");
 const packageJson = require("./package.json")
 
+// NOTE: this API_SOURCE env is only used in remote app's local development.
+// when deployed and called by host app, remote app uses host's next config
 const API_SOURCE = process.env.API_SOURCE || "http://localhost:8888";
 
 /** @type {import('next').NextConfig} */
